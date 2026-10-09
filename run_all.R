@@ -15,17 +15,36 @@
 
 rm(list = ls(all = TRUE))
 
-suppressPackageStartupMessages({
-  library(INLA)
-  library(MASS)
-  if (requireNamespace("geepack", quietly = TRUE)) library(geepack)
-  if (requireNamespace("MCMCpack", quietly = TRUE)) library(MCMCpack)
-})
-
 # Ensure working directory is reproducibility package if called from repository root
 if (dir.exists("reproducibility package")) {
   setwd("reproducibility package")
 }
+
+# ------------------------------------------------------------------------------
+# 0. Check and install missing packages automatically
+# ------------------------------------------------------------------------------
+required_cran <- c("MASS", "geepack", "MCMCpack", "coda", "Matrix")
+missing_cran <- required_cran[!sapply(required_cran, requireNamespace, quietly = TRUE)]
+if (length(missing_cran) > 0) {
+  message("Installing missing CRAN packages: ", paste(missing_cran, collapse = ", "))
+  install.packages(missing_cran, repos = "https://cloud.r-project.org")
+}
+
+if (!requireNamespace("INLA", quietly = TRUE)) {
+  message("Installing R-INLA package from official repository...")
+  install.packages("INLA", repos = c(getOption("repos"), INLA = "https://inla.r-inla-download.org/R/stable"), dep = TRUE)
+}
+
+suppressPackageStartupMessages({
+  library(INLA)
+  library(MASS)
+  library(geepack)
+  library(MCMCpack)
+  library(coda)
+})
+
+# Fix global random seed for deterministic reproduction
+set.seed(12345)
 
 # Configure INLA options for stable cross-platform execution
 inla.setOption("inla.mode", "classic")

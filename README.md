@@ -71,7 +71,7 @@ This package is designed to be fully self-contained and run completely offline w
 | `prob1.csv`–`prob5.csv` | Full simulation arrays across 100 perturbed prior precision replications. |
 | `fig2_data.rds`, `fig4_data.rds` | Convergence tracking data across MCMC iteration counts. |
 
-*Historical Code Reference:* The original 2016 exploratory and raw draft scripts are archived in the historical GitHub repository: [https://github.com/aliaksah/EMJMCMC2016](https://github.com/aliaksah/EMJMCMC2016).
+*Historical Code Reference:* The original 2016 exploratory and raw draft scripts are still reproducible and archived in the historical GitHub repository: [https://github.com/aliaksah/EMJMCMC2016](https://github.com/aliaksah/EMJMCMC2016).
 
 ---
 

@@ -11,7 +11,7 @@ suppressPackageStartupMessages({
 inla.setOption("inla.mode", "classic")
 inla.setOption("num.threads", "1:1")
 
-output_dir <- "../apppic"
+output_dir <- if (dir.exists("../apppic")) "../apppic" else "apppic"
 if (!dir.exists(output_dir)) dir.create(output_dir, recursive = TRUE)
 
 # ------------------------------------------------------------------------------
