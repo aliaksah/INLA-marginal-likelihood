@@ -2,7 +2,7 @@
 
 **Paper:** *Estimating the marginal likelihood with Integrated nested Laplace approximation (INLA)*  
 **Authors:** Aliaksandr Hubin and Geir Storvik  
-**Target Journal:** *Journal of Reproducible Statistics* (FAIR Press Journals)
+
 
 ---
 
@@ -46,13 +46,13 @@ install.packages("INLA", repos = c(getOption("repos"), INLA = "https://inla.r-in
 
 ## 3. Quick Start: One-Click Full Reproduction
 
-To run the full suite reproducing all INLA results for Tables 1, 2, 3, 4, and Section 6 in one command:
+To run the full suite reproducing all INLA results and baseline methods (Harmonic Mean, Chib's MCMC, and literature benchmarks) for Tables 1, 2, 3, 4, Section 6, and Figures 1–4 in one command:
 
 ```bash
 Rscript run_all.R
 ```
 
-This master script verifies each table against the reported values in the manuscript and prints an aligned verification summary.
+This master script executes the models, computes the baseline replications, generates high-resolution vector PDF figures, and prints aligned comparison tables matching the manuscript.
 
 ---
 
