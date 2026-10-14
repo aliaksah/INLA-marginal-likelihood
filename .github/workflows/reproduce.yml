@@ -1,0 +1,60 @@
+name: Reproduce INLA Marginal Likelihood Benchmarks
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+jobs:
+  reproduce:
+    name: Reproduce on ${{ matrix.os }} (${{ matrix.arch }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+            arch: x86_64
+          - os: macos-latest
+            arch: arm64
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up R
+        uses: r-lib/actions/setup-r@v2
+        with:
+          r-version: '4.4.1'
+          use-public-rspm: true
+
+      - name: Install System Dependencies (Linux)
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libcurl4-openssl-dev libssl-dev libxml2-dev gfortran
+
+      - name: Install R Dependencies
+        run: |
+          Rscript -e '
+            cran_pkgs <- c("MASS", "geepack", "MCMCpack", "coda", "Matrix", "mvtnorm", "statmod")
+            install.packages(cran_pkgs, repos = "https://cloud.r-project.org")
+            install.packages("INLA", repos = c(getOption("repos"), INLA = "https://inla.r-inla-download.org/R/stable"), dep = TRUE)
+          '
+
+      - name: Execute Full Reproduction Pipeline
+        env:
+          QUICK: "1"
+        run: |
+          Rscript run_all.R
+
+      - name: Upload Reproduction Logs and Results
+        uses: actions/upload-artifact@v4
+        with:
+          name: reproduction-artifacts-${{ matrix.os }}-${{ matrix.arch }}
+          path: |
+            results/*.csv
+            logs/*.txt
+            apppic/*.pdf

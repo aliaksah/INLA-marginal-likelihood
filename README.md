@@ -1,39 +1,47 @@
 # Reproducibility Package: Estimating Marginal Likelihoods with INLA
 
-**Paper:** *Estimating the marginal likelihood with Integrated nested Laplace approximation (INLA)*  
+**Manuscript:** *Estimating the marginal likelihood with Integrated nested Laplace approximation (INLA)*  
 **Authors:** Aliaksandr Hubin and Geir Storvik  
-**Journal:** *Journal of Reproducible Statistics* (FAIR Press Journals)
+**Journal:** *Journal of Reproducible Statistics* (FAIR Press Journals)  
+**Canonical Repository:** [https://github.com/aliaksah/INLA-marginal-likelihood](https://github.com/aliaksah/INLA-marginal-likelihood)  
+**Historical 2016 Archive:** [https://github.com/aliaksah/EMJMCMC2016](https://github.com/aliaksah/EMJMCMC2016)  
 
 ---
 
-## 1. Overview
+## 1. Overview and Purpose
 
-This self-contained reproducibility package provides the complete code, datasets, and execution pipeline to reproduce all marginal likelihood estimation benchmarks, comparative evaluations, and figures presented in the manuscript.
+This reproducibility package provides the complete, self-contained suite of data, standalone scripts, and automated orchestration workflows required to reproduce every analytical benchmark, numerical simulation, MCMC comparison, and vector PDF figure presented in the manuscript.
 
-The study evaluates **Integrated Nested Laplace Approximations (INLA)** against:
-- Analytical ground truth (Section 2)
-- Harmonic mean estimator (Sections 2, 5)
-- Chib's (1995) Gibbs sampling method (Sections 3, 4)
-- Chib and Jeliazkov's (2001) Metropolis–Hastings / GLMM method (Sections 5, 6)
-- Standard Laplace and Laplace MAP approximations (Section 5)
-- Power posteriors, Annealed Importance Sampling, and Nested Sampling (Section 5)
+The study systematically evaluates the accuracy, numerical stability, and computational efficiency of marginal likelihood approximations produced by **Integrated Nested Laplace Approximations (INLA)** against:
+- Closed-form analytical ground truth (Section 2, Table 1; Section 3, Table 2).
+- Converged Gibbs sampling with Chib's (1995) method (Section 3, Table 2; Section 4, Table 3; Figures 1--4).
+- High-precision independent Importance Sampling references (Section 4, Table 3; Section 5, Table 4).
+- Seven benchmark thermodynamic and MCMC evidence estimators from Friel & Wyse (2012) (Section 5, Table 4).
+- Longitudinal Poisson GLMM estimators including Chib & Jeliazkov (2001), Chib et al. (1998), and independent Stan Bridge Sampling (Section 6, Table 6).
+- Two non-Gaussian and small-cluster stress tests evaluated against 50-point Gauss-Hermite numerical quadrature (Section 8, Table 7).
+- Decision-scale Bayes factor and posterior model probability evaluations (Section 7, Table 5).
 
 ---
 
-## 2. System and Software Requirements
+## 2. Software and Environment Specification
 
-- **Language:** R ($\ge 4.4.0$)
-- **Required Packages:**
-  - `INLA` ($\ge 24.06.27$)
-  - `MCMCpack` ($\ge 1.7.0$)
-  - `MASS`
-  - `geepack`
-  - `coda`
+All published benchmarks were computed and verified under the following software environment:
+- **Operating System:** macOS Darwin (Apple Silicon arm64) and Linux Ubuntu (x86_64).
+- **R Version:** R $\ge 4.4.0$ (tested on R 4.4.1).
+- **Key Packages:**
+  - `INLA` (version 24.06.27 / 24.06.27-1, stable release from [https://inla.r-inla-download.org](https://inla.r-inla-download.org)).
+  - `MCMCpack` (version $\ge 1.7.0$, for Gibbs sampling and Chib 1995 marginal likelihoods).
+  - `rstan` (version $\ge 2.32.0$) and `bridgesampling` (version $\ge 1.1.2$, for GLMM bridge sampling).
+  - `MASS` (version $\ge 7.3.60$, for Pima Indians dataset).
+  - `geepack` (version $\ge 1.3.11$, for epileptic seizure counts; offline text fallback included).
+  - `statmod` (version $\ge 1.5.0$, for Gauss-Hermite quadrature nodes).
+  - `Matrix`, `coda`, `mvtnorm`, `parallel`.
 
-To install the required packages in R:
+To install all required dependencies from CRAN and the official R-INLA repository:
 ```R
 # Install CRAN packages
-install.packages(c("MASS", "geepack", "MCMCpack", "coda"))
+install.packages(c("MASS", "geepack", "MCMCpack", "coda", "Matrix", 
+                   "mvtnorm", "statmod", "rstan", "bridgesampling"))
 
 # Install R-INLA
 install.packages("INLA", repos = c(getOption("repos"), INLA = "https://inla.r-inla-download.org/R/stable"), dep = TRUE)
@@ -43,62 +51,60 @@ install.packages("INLA", repos = c(getOption("repos"), INLA = "https://inla.r-in
 
 ## 3. Quick Start: One-Click Full Reproduction
 
-To reproduce all results from scratch in a single run:
-
+To run the complete pipeline from start to finish:
 ```bash
 Rscript run_all.R
 ```
 
-This master script:
-1. Executes all INLA models and exact analytical benchmarks across Sections 2–6.
-2. Computes the Monte Carlo baseline methods (all 5 replications of the Harmonic Mean estimator and Chib's MCMC algorithms).
-3. Compares all reproduced values against the manuscript's reported values in formatted tables.
-4. Generates high-resolution vector PDF figures for Figures 1–4 in `../apppic/`.
+For a rapid continuous-integration verification run (using smaller sample counts and fewer iterations), set the environment variable `QUICK=1`:
+```bash
+QUICK=1 Rscript run_all.R
+```
 
 ---
 
-## 4. Package Structure and Inventory
+## 4. Script and Artifact Inventory
 
-This package is designed to be fully self-contained and run completely offline without external internet dependencies:
+Every numbered script in this package is modular and directly corresponds to specific tables, figures, and sections of the revised manuscript:
 
-| File | Purpose |
-|:---|:---|
-| `run_all.R` | Master reproduction script executing all models, baselines, and tables (Sections 2–6). |
-| `generate_figures.R` | Generates publication-ready vector PDF figures (Figures 1–4). |
-| `simcen-x1.txt`, `simcen-y1.txt` | US crime covariates and response data (Section 3). |
-| `sim3-X.txt`, `sim3-Y.txt` | Simulated binary response and covariates for probit regression (Section 4). |
-| `epileptic.txt` | Longitudinal epileptic seizure counts from Diggle et al. (1994) (Section 6). |
-| `prob1.csv`–`prob5.csv` | Full simulation arrays across 100 perturbed prior precision replications. |
-| `fig2_data.rds`, `fig4_data.rds` | Convergence tracking data across MCMC iteration counts. |
-
-*Historical Code Reference:* The original 2016 exploratory and raw draft scripts are still reproducible and archived in the historical GitHub repository: [https://github.com/aliaksah/EMJMCMC2016](https://github.com/aliaksah/EMJMCMC2016).
-
----
-
-## 5. Expected Numerical Precision Across Architectures
-
-When reproducing the results across different operating systems, CPU architectures, and R-INLA versions, readers and reviewers should expect the following numerical precision:
-
-1. **Exact Analytical Models (Table 1):**
-   - Matches to **4 decimal places** (`-7.8267`, `-3.2463`, `-2.9041`) across all platforms.
-2. **Standardized GLMs (Table 4, Pima Indians):**
-   - Matches to **2 decimal places** (`-257.25`, `-259.89`, `-247.32`, `-247.59`) across all platforms.
-3. **Multi-dimensional Numerical Laplace Integrations (Tables 2 & 3):**
-   - Agrees within **$\Delta \le 0.003$ log units** (e.g., Table 3 matches within $\Delta = 0.0002$, Table 2 matches within $\Delta = 0.0033$).
-   - Minor variations in the 3rd or 4th decimal place are expected and normal when moving between legacy **Intel x86_64** hardware (used in 2016) and modern **ARM64** hardware (e.g., Apple Silicon M-series), as well as across upstream releases of the core GMRFLib solver (quadrature weights, sparse Cholesky tolerances, and compiler vector math).
-4. **Longitudinal GLMM (Section 6):**
-   - Gaussian log-marginal likelihood reproduces at $-915.67$ (paper reported $-915.61$, Chib reported $-915.49 \pm 0.12$).
+| Script | Manuscript Section | Generated Tables & Figures | Description |
+|:---|:---|:---|:---|
+| `00_environment.R` | Environment / Sec. 2--6 | `logs/sessionInfo_*.txt`<br>`results/inla_mode_comparison.csv` | Records full system sessionInfo, compiler details, and evaluates INLA classic vs. compact mode across all models. |
+| `01_tables.R` | Sections 2, 3, 4, 5, 7 | `results/table1_linear.csv`<br>`results/table2_crime.csv`<br>`results/table3_probit.csv`<br>`results/table4_pima.csv`<br>`results/table5_decision_scale.csv` | Reproduces Tables 1--4 with analytical benchmarks, importance sampling references, replicated MCMC standard errors, and Table 5 (decision-scale Bayes factors). |
+| `02_prior_range_sim.R` | Sections 3 & 4 (Figs 1 & 3) | `results/prior_range_summary.csv` | Evaluates INLA vs. Exact / Chib across 100 perturbed prior precisions; computes error distributions (median, mean, 95th percentile, max). |
+| `03_convergence_figs.R` | Sections 3 & 4 (Figs 2 & 4) | `results/convergence_summary.csv`<br>`fig2_data.rds`, `fig4_data.rds` | Generates and summarizes MCMC convergence trajectories across iteration counts ($200$ to $102\,400$). |
+| `04_section6_glmm.R` | Section 6 | `results/table6_glmm_comparison.csv` | Evaluates the longitudinal Poisson GLMM across INLA strategies (Gaussian, Simplified Laplace, Full Laplace), integrations (CCD, Grid, EB), and Stan bridge sampling. |
+| `05_stress_tests.R` | Section 8 | `results/stress_tests.csv` | Probes INLA's limits on low-count Poisson GLMMs (S1) and small-cluster binary GLMMs (S2) against 50-point Gauss-Hermite numerical quadrature. |
+| `generate_figures.R` | Figures 1, 2, 3, 4 | `apppic/n100ci1.pdf`<br>`apppic/n100ci2.pdf`<br>`apppic/citune1.pdf`<br>`apppic/l10ci1.pdf`<br>`apppic/l10ci2.pdf`<br>`apppic/lcitune1.pdf` | Renders publication-quality vector PDFs featuring identity reference lines ($y = x$), explicit log-scale labels, and in-panel legends. |
+| `run_all.R` | All Sections | All Tables & Figures | Master driver script executing the full suite in sequential order. |
 
 ---
 
-## 6. Prior Specifications and Errata
+## 5. Datasets
 
-- **Section 5 (Table 4, Pima Indians logit model):** In the original 2016 arXiv preprint text, the prior mean $\mu_\beta$ was inadvertently listed as $1$. As verified against the code implementation and the benchmark study of Friel & Wyse (2012), the true prior mean applied was $\mu_\beta = 0$ with precisions $\sigma_\beta^{-2} \in \{0.01, 1\}$. The manuscript text has been corrected.
-- **Cross-Platform INLA Stability:** On modern ARM architectures (such as Apple Silicon macOS), `inla.setOption("inla.mode", "classic")` and `inla.setOption("num.threads", "1:1")` are set in `run_all.R` to ensure cross-platform stability and numerical determinism.
+All datasets required by the benchmarks are included locally in this directory for offline execution:
+- `simcen-x1.txt`, `simcen-y1.txt`: Standardized US crime data covariates and response (Section 3).
+- `sim3-X.txt`, `sim3-Y.txt`: Simulated binary data for probit regression (Section 4).
+- `epileptic.txt`: Longitudinal epileptic seizure counts from Diggle et al. (1994) / Thall & Vail (1990) (Section 6).
+- `Pima.tr`, `Pima.te`: Standardized diabetes dataset from MASS (Section 5).
+- `prob1.csv`--`prob5.csv`: Simulation output arrays across 100 perturbed prior precision settings.
 
 ---
 
-## 7. License
+## 6. RNG Seeds and Deterministic Reproduction
+
+To satisfy reproducibility requirements without stochastic drift, every stochastic estimator is assigned an explicit, deterministic random seed. All seeds are registered during execution and archived in `results/seeds.csv`. Running `run_all.R` reproduces every Monte Carlo replicate column in Tables 1, 2, and 3 identically.
+
+---
+
+## 7. Canonical Repository and Continuous Integration
+
+- **Canonical Repository:** [https://github.com/aliaksah/INLA-marginal-likelihood](https://github.com/aliaksah/INLA-marginal-likelihood) is the official repository for the revised manuscript.
+- **Continuous Integration:** Automated multi-platform tests run via GitHub Actions (`.github/workflows/reproduce.yml`) across Ubuntu x86_64 and macOS arm64, verifying cross-platform numerical agreement and logging session info artifacts.
+
+---
+
+## 8. License
 
 - Code: MIT License
 - Documentation & Data: Creative Commons Attribution 4.0 International (CC-BY 4.0)

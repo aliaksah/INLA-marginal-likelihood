@@ -1,0 +1,10 @@
+"Method","M1_s100","M2_s100","M1_s1","M2_s1","logBF_s100","logBF_s1"
+"INLA (classic)",-257.25,-259.89,-247.32,-247.59,2.64,0.27
+"Importance sampling (reference)",-257.23,-259.86,-247.3,-247.56,2.63,0.26
+"Laplace approximation",-257.26,-259.89,-247.33,-247.59,2.63,0.26
+"Chib and Jeliazkov",-257.23,-259.84,-247.31,-247.58,2.61,0.27
+"Laplace approximation MAP",-257.28,-259.9,-247.33,-247.62,2.62,0.29
+"Harmonic mean estimator",-279.47,-284.78,-259.84,-260.55,5.31,0.71
+"Power posteriors",-257.98,-260.59,-247.57,-247.84,2.61,0.27
+"Annealed importance sampling",-257.87,-260.43,-247.3,-247.59,2.56,0.29
+"Nested sampling",-258.82,-261.38,-246.82,-246.97,2.56,0.15

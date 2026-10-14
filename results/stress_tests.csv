@@ -1,0 +1,9 @@
+"Scenario","Method","Strategy","Integration","LogMargLik","LogMargLik_Gau","Exact_Ref","Discrepancy"
+"S1: Low-Count Poisson GLMM","INLA Default (Simplified Laplace + CCD)","simplified.laplace","ccd",-47.5829,-47.6131,-47.4815,-0.1014
+"S1: Low-Count Poisson GLMM","INLA Gaussian Approximation","gaussian","ccd",-47.5829,-47.6131,-47.4815,-0.1014
+"S1: Low-Count Poisson GLMM","INLA Full Laplace + CCD","laplace","ccd",-47.5829,-47.6131,-47.4815,-0.1014
+"S1: Low-Count Poisson GLMM","INLA Full Laplace + Grid","laplace","grid",-47.6319,-47.6131,-47.4815,-0.1504
+"S2: Small-Cluster Binary Logistic GLMM","INLA Default (Simplified Laplace + CCD)","simplified.laplace","ccd",-42.9984,-42.9767,-42.2332,-0.7652
+"S2: Small-Cluster Binary Logistic GLMM","INLA Gaussian Approximation","gaussian","ccd",-42.9984,-42.9767,-42.2332,-0.7652
+"S2: Small-Cluster Binary Logistic GLMM","INLA Full Laplace + CCD","laplace","ccd",-42.9984,-42.9767,-42.2332,-0.7652
+"S2: Small-Cluster Binary Logistic GLMM","INLA Full Laplace + Grid","laplace","grid",-42.9602,-42.9767,-42.2332,-0.7269

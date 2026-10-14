@@ -1,0 +1,6 @@
+"Example","Classic_Int","Classic_Gau","Compact_Int","Compact_Gau"
+"Ex 1: Linear Normal (s0=1000)",-7.8267,-7.8267,-7.8267,-7.8267
+"Ex 2: Crime M1 (sbeta=1000)",-73.2098,-73.214,-72.8299,-73.2136
+"Ex 3: Probit M1 (sbeta=10)",-633.09,-633.09,-633.09,-633.09
+"Ex 4: Pima Logit M1 (sbeta=10)",-257.2516,-257.2516,-257.2516,-257.2516
+"Ex 5: Seizure Poisson GLMM",-914.6674,-915.6226,-917.2375,-915.6531
