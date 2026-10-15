@@ -299,7 +299,8 @@ dec_rows <- list(
 )
 
 df_dec <- do.call(rbind, dec_rows)
-write.csv(df_dec, "results/table5_decision_scale.csv", row.names = FALSE)
+write.csv(df_dec, "results/table6_decision_scale.csv", row.names = FALSE)
+write.csv(df_dec, "results/table5_decision_scale.csv", row.names = FALSE) # alias
 print(df_dec)
 
 # Save all seeds recorded during execution

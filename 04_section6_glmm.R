@@ -139,7 +139,8 @@ df_inla_part <- data.frame(
 )
 
 df_all <- rbind(df_inla_part, do.call(rbind, ref_rows))
-write.csv(df_all, "results/table6_glmm_comparison.csv", row.names = FALSE)
+write.csv(df_all, "results/table5_glmm_comparison.csv", row.names = FALSE)
+write.csv(df_all, "results/table6_glmm_comparison.csv", row.names = FALSE) # alias
 write_seeds("results/seeds.csv")
 print(df_all)
-cat("\n04_section6_glmm.R completed successfully. Results saved to results/table6_glmm_comparison.csv\n")
+cat("\n04_section6_glmm.R completed successfully. Results saved to results/table5_glmm_comparison.csv (and alias table6_glmm_comparison.csv)\n")
