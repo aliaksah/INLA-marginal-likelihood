@@ -17,9 +17,9 @@ The study systematically evaluates the accuracy, numerical stability, and comput
 - Converged Gibbs sampling with Chib's (1995) method (Section 3, Table 2; Section 4, Table 3; Figures 1--4).
 - High-precision independent Importance Sampling references (Section 4, Table 3; Section 5, Table 4).
 - Seven benchmark thermodynamic and MCMC evidence estimators from Friel & Wyse (2012) (Section 5, Table 4).
-- Longitudinal Poisson GLMM estimators including Chib & Jeliazkov (2001), Chib et al. (1998), and independent Stan Bridge Sampling (Section 6, Table 6).
+- Longitudinal Poisson GLMM estimators including Chib & Jeliazkov (2001) and Chib et al. (1998) across INLA approximation strategies and hyperparameter integration schemes (Section 6, Table 5).
+- Decision-scale Bayes factor and posterior model probability evaluations (Section 7, Table 6).
 - Two non-Gaussian and small-cluster stress tests evaluated against 50-point Gauss-Hermite numerical quadrature (Section 8, Table 7).
-- Decision-scale Bayes factor and posterior model probability evaluations (Section 7, Table 5).
 
 ---
 

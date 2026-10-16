@@ -289,10 +289,10 @@ dec_rows <- list(
   make_dec_row("US Crime", "sigma_beta = 1000", tab2_exact[1], tab2_exact[4], tab2_inla1[1], tab2_inla1[4]),
   make_dec_row("US Crime", "sigma_beta = 10",   tab2_exact[2], tab2_exact[5], tab2_inla1[2], tab2_inla1[5]),
   make_dec_row("US Crime", "sigma_beta = 0.1",  tab2_exact[3], tab2_exact[6], tab2_inla1[3], tab2_inla1[6]),
-  # Probit (Binary)
-  make_dec_row("Sim Probit", "sigma_beta = 1000", tab3_is_ev[1], tab3_is_ev[4], tab3_inla[1], tab3_inla[4]),
-  make_dec_row("Sim Probit", "sigma_beta = 10",   tab3_is_ev[2], tab3_is_ev[5], tab3_inla[2], tab3_inla[5]),
-  make_dec_row("Sim Probit", "sigma_beta = 0.1",  tab3_is_ev[3], tab3_is_ev[6], tab3_inla[3], tab3_inla[6]),
+  # Probit (Binary) - using Chib's method mean from Table 3 as reference
+  make_dec_row("Sim Probit", "sigma_beta = 1000", tab3_chib_mean[1], tab3_chib_mean[4], tab3_inla[1], tab3_inla[4]),
+  make_dec_row("Sim Probit", "sigma_beta = 10",   tab3_chib_mean[2], tab3_chib_mean[5], tab3_inla[2], tab3_inla[5]),
+  make_dec_row("Sim Probit", "sigma_beta = 0.1",  tab3_chib_mean[3], tab3_chib_mean[6], tab3_inla[3], tab3_inla[6]),
   # Pima (Logit)
   make_dec_row("Pima Logit", "sigma_beta^2 = 100", is_pima_m1_100$logev, is_pima_m2_100$logev, m1_100$mlik[1,1], m2_100$mlik[1,1]),
   make_dec_row("Pima Logit", "sigma_beta^2 = 1",   is_pima_m1_1$logev,   is_pima_m2_1$logev,   m1_1$mlik[1,1],   m2_1$mlik[1,1])

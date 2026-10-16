@@ -2,8 +2,8 @@
 "US Crime","sigma_beta = 1000",23.428,23.428,0,1,1,0,"very strong",FALSE
 "US Crime","sigma_beta = 10",9.626,9.626,0,0.9999,0.9999,0,"very strong",FALSE
 "US Crime","sigma_beta = 0.1",0.375,0.375,0,0.5927,0.5927,0,"not worth a mention",FALSE
-"Sim Probit","sigma_beta = 1000",26.349,15.907,-10.4414,1,1,0,"very strong",FALSE
-"Sim Probit","sigma_beta = 10",16.141,6.715,-9.4257,1,0.9988,-0.0012,"very strong",FALSE
-"Sim Probit","sigma_beta = 0.1",-19.566,-19.979,-0.413,0,0,0,"very strong",FALSE
+"Sim Probit","sigma_beta = 1000",15.912,15.907,-0.0051,1,1,0,"very strong",FALSE
+"Sim Probit","sigma_beta = 10",6.689,6.715,0.0255,0.9988,0.9988,0,"very strong",FALSE
+"Sim Probit","sigma_beta = 0.1",-19.97,-19.979,-0.0085,0,0,0,"very strong",FALSE
 "Pima Logit","sigma_beta^2 = 100",2.624,2.634,0.0106,0.9324,0.933,7e-04,"positive",FALSE
 "Pima Logit","sigma_beta^2 = 1",0.26,0.268,0.008,0.5646,0.5665,0.002,"not worth a mention",FALSE
