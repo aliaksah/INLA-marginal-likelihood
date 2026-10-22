@@ -2,10 +2,14 @@
 # 04_section6_glmm.R: Longitudinal Poisson GLMM Systematic Comparison
 # ==============================================================================
 source("R/common.R")
-suppressPackageStartupMessages({
-  library(rstan)
-  library(bridgesampling)
-})
+has_stan_pkgs <- requireNamespace("rstan", quietly = TRUE) &&
+                 requireNamespace("bridgesampling", quietly = TRUE)
+if (has_stan_pkgs) {
+  suppressPackageStartupMessages({
+    library(rstan)
+    library(bridgesampling)
+  })
+}
 
 cat_header("04: Longitudinal Poisson GLMM Systematic INLA & Reference Benchmark")
 
@@ -56,43 +60,53 @@ cat("\nEvaluating Reference Benchmarks for Section 6 GLMM...\n")
 bs_mean <- NA; bs_sd <- NA; bs_se <- NA
 
 has_stan <- FALSE
-tryCatch({
-  rstan_options(auto_write = TRUE)
-  stan_model_file <- "stan/glmm_epilepsy.stan"
-  cat("  Attempting to compile Stan model... ")
-  sm <- stan_model(file = stan_model_file)
-  has_stan <- TRUE
-  cat("done.\n")
-}, error = function(e) {
-  cat("\n  [Note: C++ compilation via Stan unavailable on this system (requires Xcode license agreement).]\n")
-  cat("  Using published literature benchmarks: Chib & Jeliazkov (2001) and Chib et al. (1998).\n")
-})
+if (has_stan_pkgs) {
+  tryCatch({
+    rstan_options(auto_write = TRUE)
+    stan_model_file <- "stan/glmm_epilepsy.stan"
+    cat("  Attempting to compile Stan model... ")
+    sm <- stan_model(file = stan_model_file)
+    cat("done.\n")
 
-if (has_stan) {
-  stan_dat <- list(
-    N   = nrow(d_glmm),
-    J   = length(unique(d_glmm$id2)),
-    y   = as.integer(d_glmm$y),
-    ofs = d_glmm$ofs,
-    trt = d_glmm$trt,
-    bsl = d_glmm$bsl,
-    id  = as.integer(d_glmm$id2)
-  )
-  n_bridge_reps <- if (QUICK) 2 else 5
-  bridge_results <- numeric(n_bridge_reps)
-  for (r in seq_len(n_bridge_reps)) {
-    seed_r <- 60000 + r
-    fit <- sampling(sm, data = stan_dat, iter = if (QUICK) 3000 else 10000,
-                    warmup = if (QUICK) 1000 else 2000,
-                    chains = 2, cores = min(2, N_CORES), seed = seed_r,
-                    control = list(adapt_delta = 0.95), refresh = 0)
-    bs <- bridge_sampler(fit, silent = TRUE)
-    bridge_results[r] <- bs$logml
-    note_seed(sprintf("glmm_bridge_rep%d", r), seed_r)
-  }
-  bs_mean <- mean(bridge_results)
-  bs_sd   <- sd(bridge_results)
-  bs_se   <- bs_sd / sqrt(n_bridge_reps)
+    stan_dat <- list(
+      N   = nrow(d_glmm),
+      J   = length(unique(d_glmm$id2)),
+      y   = as.integer(d_glmm$y),
+      ofs = d_glmm$ofs,
+      trt = d_glmm$trt,
+      bsl = d_glmm$bsl,
+      id  = as.integer(d_glmm$id2)
+    )
+    n_bridge_reps <- if (QUICK) 2 else 5
+    bridge_results <- numeric(n_bridge_reps)
+    # Note: On macOS, multi-core fork in rstan often fails with mccollect NULL
+    # Using cores = 1 on macOS avoids fork crashes while remaining fast in QUICK mode
+    cores_to_use <- if (Sys.info()["sysname"] == "Darwin") 1 else min(2, N_CORES)
+    cat(sprintf("  Sampling with Stan (%d reps, cores = %d)... ", n_bridge_reps, cores_to_use))
+    for (r in seq_len(n_bridge_reps)) {
+      seed_r <- 60000 + r
+      fit <- sampling(sm, data = stan_dat, iter = if (QUICK) 3000 else 10000,
+                      warmup = if (QUICK) 1000 else 2000,
+                      chains = 2, cores = cores_to_use, seed = seed_r,
+                      control = list(adapt_delta = 0.95), refresh = 0)
+      bs <- bridge_sampler(fit, silent = TRUE)
+      bridge_results[r] <- bs$logml
+      note_seed(sprintf("glmm_bridge_rep%d", r), seed_r)
+    }
+    cat("done.\n")
+    if (!any(is.na(bridge_results))) {
+      bs_mean <- mean(bridge_results)
+      bs_sd   <- sd(bridge_results)
+      bs_se   <- bs_sd / sqrt(n_bridge_reps)
+      has_stan <- TRUE
+    }
+  }, error = function(e) {
+    cat(sprintf("\n  [Note: Stan sampling unavailable or failed: %s]\n", conditionMessage(e)))
+    cat("  Using published literature benchmarks: Chib & Jeliazkov (2001) and Chib et al. (1998).\n")
+  })
+} else {
+  cat("  [Note: rstan / bridgesampling not installed; skipping optional Stan bridge sampling.]\n")
+  cat("  Using published literature benchmarks: Chib & Jeliazkov (2001) and Chib et al. (1998).\n")
 }
 
 # Literature values from published papers

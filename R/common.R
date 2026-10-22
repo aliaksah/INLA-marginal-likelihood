@@ -24,7 +24,7 @@ APPPIC <- if (dir.exists("../apppic")) "../apppic" else "apppic"
 dir.create(APPPIC, showWarnings = FALSE, recursive = TRUE)
 
 # ---- packages ---------------------------------------------------------------
-ensure_packages <- function(cran = c("MASS", "geepack", "MCMCpack", "coda", "Matrix", "mvtnorm")) {
+ensure_packages <- function(cran = c("MASS", "geepack", "MCMCpack", "coda", "Matrix", "mvtnorm", "statmod")) {
   missing <- cran[!vapply(cran, requireNamespace, logical(1), quietly = TRUE)]
   if (length(missing)) {
     message("Installing missing CRAN packages: ", paste(missing, collapse = ", "))

@@ -27,20 +27,21 @@ jobs:
       - name: Set up R
         uses: r-lib/actions/setup-r@v2
         with:
-          r-version: '4.4.1'
+          r-version: 'release'
           use-public-rspm: true
 
       - name: Install System Dependencies (Linux)
         if: runner.os == 'Linux'
         run: |
-          sudo apt-get update
-          sudo apt-get install -y libcurl4-openssl-dev libssl-dev libxml2-dev gfortran
+          sudo apt-get update -qq
+          sudo apt-get install -y --no-install-recommends libcurl4-openssl-dev libxml2-dev
 
       - name: Install R Dependencies
         run: |
           Rscript -e '
             cran_pkgs <- c("MASS", "geepack", "MCMCpack", "coda", "Matrix", "mvtnorm", "statmod")
-            install.packages(cran_pkgs, repos = "https://cloud.r-project.org")
+            # Uses fast pre-compiled binaries: RSPM on Linux and CRAN on macOS
+            install.packages(cran_pkgs)
             install.packages("INLA", repos = c(getOption("repos"), INLA = "https://inla.r-inla-download.org/R/stable"), dep = TRUE)
           '
 
